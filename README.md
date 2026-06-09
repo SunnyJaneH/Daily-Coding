@@ -32,7 +32,7 @@ Daily-Coding/
 | Category | Platform | Difficulty | Problems Solved |
 |----------|----------|------------|-----------------|
 | SQL | StrataScratch | Easy → Medium | 30 |
-| Python | LeetCode | Easy (Arrays, Hash Maps) | 5 |
+| Python | LeetCode | Easy (Arrays, Hash Maps) | 7 |
 | Pandas | LeetCode | Intro to Pandas | 5 |
 
 ---
