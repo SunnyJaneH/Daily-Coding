@@ -16,3 +16,20 @@ WHERE business_name = 'Roxanne Cafe'
 AND violation_id IS NOT NULL
 GROUP BY inspection_year
 ORDER BY inspection_year;
+
+-- [10352] Users By Average Session Time (Facebook) - Medium
+-- Key: subquery first aggregates load/exit per user per day, outer AVG across days
+-- Key: FILTER (WHERE ...) replaces CTE for cleaner aggregation
+-- Key: EXTRACT(EPOCH FROM interval) converts time difference to seconds
+SELECT user_id,
+       AVG(EXTRACT(EPOCH FROM (earliest_exit - latest_load))) AS avg_session_time
+FROM (
+    SELECT user_id,
+           DATE(timestamp) AS day,
+           MAX(timestamp::timestamp) FILTER (WHERE action = 'page_load') AS latest_load,
+           MIN(timestamp::timestamp) FILTER (WHERE action = 'page_exit') AS earliest_exit
+    FROM facebook_web_log
+    GROUP BY user_id, DATE(timestamp)
+) daily
+WHERE earliest_exit > latest_load
+GROUP BY user_id;
