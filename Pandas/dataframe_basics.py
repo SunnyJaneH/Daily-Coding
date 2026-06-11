@@ -19,10 +19,12 @@ def selectFirstRows(employees: pd.DataFrame) -> pd.DataFrame:
     return employees.head(3)
 
 # [2880] Select Data (Easy)
+# Key: df.loc[row condition, [columns]] to filter rows and select columns in one step
 def selectData(students: pd.DataFrame) -> pd.DataFrame:
     return students.loc[students['student_id'] == 101, ['name', 'age']]
 
 # [2881] Create a New Column (Easy)
+# Key: df['new_col'] = df['existing_col'] * n to add a new column
 def createBonusColumn(employees: pd.DataFrame) -> pd.DataFrame:
     employees['bonus'] = employees['salary'] * 2
     return employees
@@ -42,3 +44,27 @@ def dropMissingData(students: pd.DataFrame) -> pd.DataFrame:
 def modifySalaryColumn(employees: pd.DataFrame) -> pd.DataFrame:
     employees['salary'] = employees['salary'] * 2
     return employees
+
+# [2885] Rename Columns (Easy)
+# Key: df.rename(columns={'old': 'new', ...}) to rename multiple columns at once
+def renameColumns(students: pd.DataFrame) -> pd.DataFrame:
+    return students.rename(columns={
+        'id': 'student_id',
+        'first': 'first_name',
+        'last': 'last_name',
+        'age': 'age_in_years'
+    })
+
+# [2886] Change Data Type (Easy)
+# Key: df['col'].astype(type) to convert column data type
+# Common types: int, float, str, bool
+def changeDatatype(students: pd.DataFrame) -> pd.DataFrame:
+    students['grade'] = students['grade'].astype(int)
+    return students
+
+# [2887] Fill Missing Data (Easy)
+# Key: df['col'].fillna(value) to fill missing values
+# Compare: fillna() fills NaN, dropna() removes rows with NaN
+def fillMissingValues(products: pd.DataFrame) -> pd.DataFrame:
+    products['quantity'] = products['quantity'].fillna(0)
+    return products
