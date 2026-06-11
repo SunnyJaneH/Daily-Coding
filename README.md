@@ -1,9 +1,8 @@
 # 🧠 Daily Coding Practice
-
 Daily solutions to SQL, Python, and Pandas problems as part of my structured job search preparation.
 
 **Platforms:** [StrataScratch](https://stratascratch.com/) · [LeetCode](https://leetcode.com/)  
-**Schedule:** 10 SQL · 2 Python · 2 Pandas per day
+**Schedule:** 10 SQL · 3 Python · 3 Pandas per day
 
 ---
 
@@ -17,7 +16,8 @@ Daily-Coding/
 │   ├── joins.sql
 │   ├── window_functions.sql
 │   ├── date_time.sql
-│   └── pattern_matching.sql
+│   ├── pattern_matching.sql
+│   └── cte.sql
 ├── Python/
 │   ├── array.py
 │   └── hashmap.py
@@ -31,7 +31,7 @@ Daily-Coding/
 
 | Category | Platform | Difficulty | Problems Solved |
 |----------|----------|------------|-----------------|
-| SQL | StrataScratch | Easy → Medium | 30 |
+| SQL | StrataScratch | Easy → Medium | 31 |
 | Python | LeetCode | Easy (Arrays, Hash Maps) | 7 |
 | Pandas | LeetCode | Intro to Pandas | 5 |
 
@@ -47,6 +47,7 @@ Daily-Coding/
 | `window_functions.sql` | RANK, ROW_NUMBER, PARTITION BY, DISTINCT ON |
 | `date_time.sql` | EXTRACT, TO_CHAR, DATE, EPOCH, FILTER, session time |
 | `pattern_matching.sql` | LIKE, wildcards |
+| `cte.sql` | WITH, multi-CTE, LEFT JOIN + HAVING, acceptance rate |
 
 ---
 
@@ -54,8 +55,16 @@ Daily-Coding/
 
 | File | Topics |
 |------|--------|
-| `array.py` | Sort + slice, two-flag traversal, index safety |
+| `array.py` | Sort + slice, two-flag traversal, index safety, slice assignment, double pointer |
 | `hashmap.py` | Hash map pattern, set deduplication |
+
+---
+
+## 🐼 Pandas Topics Covered
+
+| File | Topics |
+|------|--------|
+| `dataframe_basics.py` | head(), loc[], slice assignment, new column creation |
 
 ---
 
