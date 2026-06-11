@@ -33,7 +33,7 @@ Daily-Coding/
 |----------|----------|------------|-----------------|
 | SQL | StrataScratch | Easy → Medium | 35 |
 | Python | LeetCode | Easy (Arrays, Hash Maps) | 7 |
-| Pandas | LeetCode | Intro to Pandas | 8 |
+| Pandas | LeetCode | Intro to Pandas | 11 |
 
 ---
 
