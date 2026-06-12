@@ -72,3 +72,25 @@ SELECT client_id,
 FROM fact_events
 GROUP BY client_id, EXTRACT(MONTH FROM time_id)
 ORDER BY client_id, month;
+
+-- [10130] Inspections by Risk Category (SF Health) - Medium
+-- Key: PIVOT using CASE WHEN to turn row values into columns
+-- Key: COUNT(CASE WHEN condition THEN 1 END) counts matching rows
+-- Key: NULL risk_category is treated as a separate category
+SELECT inspection_type,
+       COUNT(CASE WHEN risk_category IS NULL THEN 1 END) AS no_risk_results,
+       COUNT(CASE WHEN risk_category = 'Low Risk' THEN 1 END) AS low_risk_results,
+       COUNT(CASE WHEN risk_category = 'Moderate Risk' THEN 1 END) AS medium_risk_results,
+       COUNT(CASE WHEN risk_category = 'High Risk' THEN 1 END) AS high_risk_results,
+       COUNT(*) AS total_inspections
+FROM sf_restaurant_health_violations
+GROUP BY inspection_type
+ORDER BY total_inspections DESC;
+
+-- [10090] Percentage of Shipable Orders (Amazon) - Medium
+-- Key: JOIN customers to get address; no WHERE needed
+-- Key: CASE WHEN inside COUNT to count shipable orders
+-- Key: * 100.0 to avoid integer division
+SELECT COUNT(CASE WHEN c.address IS NOT NULL THEN 1 END) * 100.0 / COUNT(*) AS percent_shipable
+FROM orders o
+JOIN customers c ON o.cust_id = c.id;
