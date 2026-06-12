@@ -62,3 +62,37 @@ class Solution:
             right -= 1
 
         return left == right and left != 0 and right != n - 1
+
+# [1122] Relative Sort Array (Easy)
+# Sort arr1 by arr2 order; elements not in arr2 go to end sorted ascending
+# Key: iterate arr2, collect matching elements from arr1; append sorted remainder
+class Solution:
+    def relativeSortArray(self, arr1: List[int], arr2: List[int]) -> List[int]:
+        result = []
+        for num in arr2:
+            for x in arr1:
+                if x == num:
+                    result.append(x)
+        remaining = sorted([x for x in arr1 if x not in arr2])
+        return result + remaining
+
+# [1470] Shuffle the Array (Easy)
+# Interleave first and second halves: [x1,x2,...,xn,y1,y2,...,yn] -> [x1,y1,x2,y2,...]
+# Key: zip pairs elements from both halves; unpack each tuple with for x, y in zip()
+class Solution:
+    def shuffle(self, nums: List[int], n: int) -> List[int]:
+        result = []
+        for x, y in zip(nums[:n], nums[n:]):
+            result.append(x)
+            result.append(y)
+        return result
+
+# [1720] Decode XORed Array (Easy)
+# Recover arr from encoded where encoded[i] = arr[i] XOR arr[i+1]
+# Key: arr[i+1] = encoded[i] ^ arr[i]; XOR same number twice cancels out
+class Solution:
+    def decode(self, encoded: List[int], first: int) -> List[int]:
+        arr = [first]
+        for i in range(len(encoded)):
+            arr.append(encoded[i] ^ arr[i])
+        return arr
