@@ -62,3 +62,38 @@ JOIN linkedin_employees e ON ep.emp_id = e.id
 GROUP BY p.title, p.budget
 HAVING CEILING(SUM(e.salary * (p.end_date - p.start_date) / 365.0)) > p.budget
 ORDER BY p.title;
+
+-- [10156] Number Of Units Per Nationality (Airbnb) - Medium
+-- Key: JOIN on host_id to link hosts and units
+-- Key: Filter unit_type = 'Apartment' to count only apartment units
+-- Key: COUNT(DISTINCT unit_id) to count unique apartments
+SELECT h.nationality,
+       COUNT(DISTINCT u.unit_id) AS apartment_count
+FROM airbnb_hosts h
+JOIN airbnb_units u ON h.host_id = u.host_id
+WHERE h.age < 30
+AND u.unit_type = 'Apartment'
+GROUP BY h.nationality
+ORDER BY apartment_count DESC;
+
+-- [10085] Matching Users Pairs (Facebook) - Medium
+-- Key: Self JOIN with multiple ON conditions
+-- Key: same location, gender; different age, seniority
+SELECT a.id AS employee_1,
+       b.id AS employee_2
+FROM facebook_employees a
+JOIN facebook_employees b
+    ON a.location = b.location
+    AND a.age != b.age
+    AND a.gender = b.gender
+    AND a.is_senior != b.is_senior;
+
+-- [10078] Matching Hosts and Guests (Airbnb) - Medium
+-- Key: JOIN two different tables on gender and nationality
+-- Key: DISTINCT to avoid duplicate pairs
+SELECT DISTINCT a.host_id,
+       g.guest_id
+FROM airbnb_hosts a
+JOIN airbnb_guests g
+    ON a.gender = g.gender
+    AND a.nationality = g.nationality;
