@@ -24,3 +24,18 @@ LEFT JOIN accept a
     AND a.user_id_receiver = s.user_id_receiver
 GROUP BY s.date
 HAVING COUNT(a.user_id_receiver) > 0;
+
+-- [10077] Income By Title and Gender (SF) - Medium
+-- Key: CTE to sum bonuses per employee first, then JOIN
+-- Key: JOIN (not LEFT JOIN) automatically excludes employees without bonuses
+WITH bonus AS (
+    SELECT worker_ref_id, SUM(bonus) AS total_bonus
+    FROM sf_bonus
+    GROUP BY worker_ref_id
+)
+SELECT e.employee_title,
+       e.sex,
+       AVG(e.salary + b.total_bonus) AS avg_compensation
+FROM sf_employee e
+JOIN bonus b ON e.id = b.worker_ref_id
+GROUP BY e.employee_title, e.sex;
