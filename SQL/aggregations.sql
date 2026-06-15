@@ -101,11 +101,3 @@ SELECT business_name, review_text
 FROM yelp_reviews
 WHERE cool = (SELECT MAX(cool) FROM yelp_reviews);
 
--- [10049] Reviews of Categories (Yelp) - Medium
--- Key: STRING_TO_ARRAY splits delimited string into array
--- Key: UNNEST expands array into rows for GROUP BY
-SELECT UNNEST(STRING_TO_ARRAY(categories, ';')) AS category,
-       SUM(review_count) AS total_reviews
-FROM yelp_business
-GROUP BY category
-ORDER BY total_reviews DESC;
