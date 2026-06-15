@@ -76,3 +76,15 @@ SELECT DENSE_RANK() OVER (ORDER BY SUM(n_messages) DESC) AS ranking,
 FROM airbnb_contacts
 GROUP BY id_guest
 ORDER BY ranking;
+
+-- [10048] Top Businesses With Most Reviews (Yelp) - Medium
+-- Key: RANK() for ranking with gaps (ties get same rank, next rank is skipped)
+-- Key: Subquery required since window functions cannot be used in WHERE
+SELECT business_name, review_count
+FROM (
+    SELECT name AS business_name,
+           review_count,
+           RANK() OVER (ORDER BY review_count DESC) AS rnk
+    FROM yelp_business
+) t
+WHERE rnk <= 5;
