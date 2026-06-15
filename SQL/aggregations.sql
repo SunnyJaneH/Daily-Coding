@@ -94,3 +94,18 @@ ORDER BY total_inspections DESC;
 SELECT COUNT(CASE WHEN c.address IS NOT NULL THEN 1 END) * 100.0 / COUNT(*) AS percent_shipable
 FROM orders o
 JOIN customers c ON o.cust_id = c.id;
+
+-- [10060] Top Cool Votes (Yelp) - Medium
+-- Key: Subquery with MAX() to find highest value; handles ties unlike LIMIT 1
+SELECT business_name, review_text
+FROM yelp_reviews
+WHERE cool = (SELECT MAX(cool) FROM yelp_reviews);
+
+-- [10049] Reviews of Categories (Yelp) - Medium
+-- Key: STRING_TO_ARRAY splits delimited string into array
+-- Key: UNNEST expands array into rows for GROUP BY
+SELECT UNNEST(STRING_TO_ARRAY(categories, ';')) AS category,
+       SUM(review_count) AS total_reviews
+FROM yelp_business
+GROUP BY category
+ORDER BY total_reviews DESC;
