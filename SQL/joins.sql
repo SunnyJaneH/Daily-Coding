@@ -97,3 +97,11 @@ FROM airbnb_hosts a
 JOIN airbnb_guests g
     ON a.gender = g.gender
     AND a.nationality = g.nationality;
+
+-- Employee and Manager Salaries (StrataScratch #9894)
+-- Find employees earning more than their own manager.
+-- Self-join: e = employee row, m = that employee's manager row.
+SELECT e.first_name, e.salary
+FROM employee e
+JOIN employee m ON e.manager_id = m.employee_id
+WHERE e.salary > m.salary;
