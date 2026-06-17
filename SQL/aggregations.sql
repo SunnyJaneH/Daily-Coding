@@ -101,3 +101,12 @@ SELECT business_name, review_text
 FROM yelp_reviews
 WHERE cool = (SELECT MAX(cool) FROM yelp_reviews);
 
+-- Titanic Survivors and Non-Survivors (StrataScratch #9881)
+-- Pivot pclass into columns, grouped by survived status.
+-- COUNT(CASE WHEN...) only counts non-NULL matches per class.
+SELECT survived,
+       COUNT(CASE WHEN pclass = 1 THEN 1 END) AS first_class,
+       COUNT(CASE WHEN pclass = 2 THEN 1 END) AS second_class,
+       COUNT(CASE WHEN pclass = 3 THEN 1 END) AS third_class
+FROM titanic
+GROUP BY survived;
