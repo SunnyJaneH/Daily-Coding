@@ -88,3 +88,14 @@ FROM (
     FROM yelp_business
 ) t
 WHERE rnk <= 5;
+
+-- Highest Salary In Department (StrataScratch #9897)
+-- Find the employee with the highest salary per department.
+-- RANK() (not ROW_NUMBER) so ties are all included.
+SELECT department, first_name, salary
+FROM (
+    SELECT department, first_name, salary,
+           RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS rnk
+    FROM employee
+) t
+WHERE rnk = 1;
