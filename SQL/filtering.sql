@@ -48,3 +48,15 @@ SELECT first_name, last_name, department, salary
 FROM techcorp_workforce
 WHERE department IN ('HR', 'Admin')
 AND salary > 80000;
+
+-- Highest Target Under Manager (StrataScratch #9905)
+-- Find employee(s) under manager_id=13 with the highest target.
+-- Uses a correlated-style subquery scoped to the same manager.
+SELECT first_name, target
+FROM salesforce_employees
+WHERE manager_id = 13
+  AND target = (
+      SELECT MAX(target)
+      FROM salesforce_employees
+      WHERE manager_id = 13
+  );
