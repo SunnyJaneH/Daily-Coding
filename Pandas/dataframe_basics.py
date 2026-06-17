@@ -68,3 +68,45 @@ def changeDatatype(students: pd.DataFrame) -> pd.DataFrame:
 def fillMissingValues(products: pd.DataFrame) -> pd.DataFrame:
     products['quantity'] = products['quantity'].fillna(0)
     return products
+
+# ============================================
+# 2888. Reshape Data: Concatenate (Easy)
+# Stack two DataFrames vertically (row-wise).
+# ============================================
+def concatenate_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> pd.DataFrame:
+    # ignore_index=True regenerates a clean 0..n index instead of
+    # repeating df1's and df2's original indices.
+    return pd.concat([df1, df2], ignore_index=True)
+
+
+# ============================================
+# 2889. Reshape Data: Pivot (Easy)
+# Long format -> wide format: turn unique 'city' values into columns.
+# ============================================
+def pivot_table(weather: pd.DataFrame) -> pd.DataFrame:
+    return weather.pivot(index='month', columns='city', values='temperature')
+
+
+# ============================================
+# 2890. Reshape Data: Melt (Easy)
+# Wide format -> long format: collapse quarter_1..quarter_4 columns
+# into a single 'quarter' column with corresponding 'sales' values.
+# ============================================
+def melt_data(report: pd.DataFrame) -> pd.DataFrame:
+    return pd.melt(
+        report,
+        id_vars=['product'],
+        var_name='quarter',
+        value_name='sales'
+    )
+
+
+# ============================================
+# 2891. Method Chaining (Easy)
+# Filter + sort + select column, all in a single chained expression.
+# ============================================
+def find_heavy_animals(animals: pd.DataFrame) -> pd.DataFrame:
+    return (
+        animals[animals['weight'] > 100]
+        .sort_values('weight', ascending=False)[['name']]
+    )
