@@ -99,3 +99,14 @@ FROM (
     FROM employee
 ) t
 WHERE rnk = 1;
+
+-- Second Highest Salary (StrataScratch #9892)
+-- Find the second highest distinct salary value.
+-- DENSE_RANK() avoids skipped ranks when there are ties at the top.
+SELECT salary
+FROM (
+    SELECT salary,
+           DENSE_RANK() OVER (ORDER BY salary DESC) AS rnk
+    FROM employee
+) t
+WHERE rnk = 2;
