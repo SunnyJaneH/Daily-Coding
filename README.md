@@ -31,9 +31,9 @@ Daily-Coding/
 
 | Category | Platform | Difficulty | Problems Solved |
 |----------|----------|------------|-----------------|
-| SQL | StrataScratch | Easy → Medium | 50 |
+| SQL | StrataScratch, LeetCode | Easy → Medium | 53 |
 | Python | LeetCode | Easy (Arrays, Hash Maps) | 10 |
-| Pandas | LeetCode | Intro to Pandas | 15 |
+| Pandas | LeetCode | Intro to Pandas | 18 |
 
 ---
 
