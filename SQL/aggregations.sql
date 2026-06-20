@@ -110,3 +110,28 @@ SELECT survived,
        COUNT(CASE WHEN pclass = 3 THEN 1 END) AS third_class
 FROM titanic
 GROUP BY survived;
+
+-- Problem: 1193. Monthly Transactions I
+-- Difficulty: Medium
+-- Topic: Aggregations (GROUP BY, conditional aggregation, COALESCE)
+-- Link: https://leetcode.com/problems/monthly-transactions-i/
+
+-- For each month and country, find the number of transactions and their total amount,
+-- the number of approved transactions and their total amount.
+
+SELECT DATE_FORMAT(trans_date, '%Y-%m') AS month, 
+    country, 
+    COUNT(*) AS trans_count, 
+    COUNT(CASE WHEN state='approved' THEN 1 END) AS approved_count, 
+    SUM(amount) AS trans_total_amount, 
+    COALESCE(SUM(CASE WHEN state='approved' THEN amount END), 0) AS approved_total_amount
+FROM Transactions
+GROUP BY month, country;
+
+-- Key takeaways:
+-- 1. DATE_FORMAT(date_col, '%Y-%m') extracts "YYYY-MM" string directly, avoiding
+--    year/month collision issues that MONTH(date_col) alone would cause.
+-- 2. COUNT(CASE WHEN condition THEN 1 END) is the standard conditional count pattern:
+--    rows not matching the condition return NULL, which COUNT() ignores.
+-- 3. SUM(CASE WHEN condition THEN col END) returns NULL (not 0) when no rows match
+--    the condition within a group. Wrap with COALESCE(..., 0) to force 0 instead of NULL.
