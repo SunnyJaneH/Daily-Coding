@@ -105,3 +105,64 @@ SELECT e.first_name, e.salary
 FROM employee e
 JOIN employee m ON e.manager_id = m.employee_id
 WHERE e.salary > m.salary;
+
+-- Problem: 1174. Immediate Food Delivery II
+-- Difficulty: Medium
+-- Topic: Joins (subquery + JOIN to find "key row per group")
+-- Link: https://leetcode.com/problems/immediate-food-delivery-ii/
+
+-- Find the percentage of immediate orders in the FIRST orders of all customers,
+-- rounded to 2 decimal places.
+
+SELECT ROUND(SUM(CASE WHEN d.order_date=d.customer_pref_delivery_date THEN 1 ELSE 0 END)*100/COUNT(*),2) AS immediate_percentage
+FROM Delivery d
+JOIN (
+    SELECT customer_id, 
+           MIN(order_date) AS first_date 
+    FROM Delivery
+    GROUP BY customer_id
+) t
+ON d.customer_id = t.customer_id
+WHERE d.order_date = t.first_date;
+
+-- Key takeaways:
+-- 1. Classic pattern: "find the full row matching an aggregate value per group."
+--    Step 1 - subquery with GROUP BY + MIN/MAX gets the target value per group
+--             (here: each customer's earliest order_date).
+--    Step 2 - JOIN that result back to the original table on the group key
+--             (customer_id) AND the aggregate value (order_date = first_date)
+--             to recover the full row of data (customer_pref_delivery_date, etc).
+-- 2. This pattern is very common in SQL interview questions - any time you need
+--    "the row where X is min/max within each group", reach for this subquery+JOIN shape.
+-- 3. ROUND(numerator * 100 / denominator, 2) is the standard percentage pattern.
+
+-- Problem: 550. Game Play Analysis IV
+-- Difficulty: Medium
+-- Topic: Joins + Date functions (subquery + JOIN, DATE_ADD)
+-- Link: https://leetcode.com/problems/game-play-analysis-iv/
+
+-- Report the fraction of players that logged in again on the day after the day
+-- they first logged in, rounded to 2 decimal places.
+
+SELECT ROUND(SUM(CASE WHEN a.event_date=DATE_ADD(t.first_date,INTERVAL 1 DAY) THEN 1 ELSE 0 END)/COUNT(DISTINCT a.player_id),2) AS fraction
+FROM Activity a
+JOIN (
+    SELECT player_id, MIN(event_date) AS first_date
+    FROM Activity
+    GROUP BY player_id
+) t
+ON a.player_id=t.player_id;
+
+-- Key takeaways:
+-- 1. Same "key row per group" subquery+JOIN pattern as 1174 - find each player's
+--    first_date via GROUP BY + MIN, then JOIN back to check for next-day login.
+-- 2. DATE_ADD(date_col, INTERVAL 1 DAY) adds one day to a date in MySQL.
+-- 3. IMPORTANT PITFALL: do NOT filter with WHERE when the denominator needs the
+--    full/unfiltered row count. WHERE executes before aggregation, so filtering
+--    rows down to only those matching the "next day login" condition would also
+--    shrink COUNT(DISTINCT player_id) - corrupting the denominator (it would only
+--    count players who already satisfied the condition, giving 1/1 instead of 1/3).
+--    Fix: push the condition into SUM(CASE WHEN ...) instead of WHERE, so COUNT()
+--    still sees every row/player while SUM only tallies the qualifying ones.
+-- 4. "fraction" in the output means a plain ratio (e.g. 0.33), not a percentage -
+--    don't multiply by 100 here (unlike 1193/1174 which ask for percentages).
