@@ -166,3 +166,35 @@ ON a.player_id=t.player_id;
 --    still sees every row/player while SUM only tallies the qualifying ones.
 -- 4. "fraction" in the output means a plain ratio (e.g. 0.33), not a percentage -
 --    don't multiply by 100 here (unlike 1193/1174 which ask for percentages).
+
+-- Problem: 1978. Employees Whose Manager Left the Company
+-- Difficulty: Easy
+-- Topic: Joins (self LEFT JOIN to find "missing" references)
+-- Link: https://leetcode.com/problems/employees-whose-manager-left-the-company/
+
+-- Find employee_id of employees whose salary < 30000 AND whose manager has left
+-- the company (manager_id points to an employee_id that no longer exists in the table).
+
+SELECT e.employee_id
+FROM Employees e
+LEFT JOIN Employees m 
+ON e.manager_id = m.employee_id
+WHERE e.salary<30000
+AND m.employee_id IS NULL
+AND e.manager_id IS NOT NULL
+ORDER BY e.employee_id;
+
+-- Key takeaways:
+-- 1. Self LEFT JOIN pattern for finding "dangling references": join the table to
+--    itself (e = the row, m = the referenced row), and rows where the JOIN finds
+--    no match show up as m.* = NULL. Classic way to detect "this foreign key points
+--    to something that no longer exists."
+-- 2. CRITICAL PITFALL: NULL = NULL evaluates to NULL (not TRUE) in SQL, so when
+--    e.manager_id IS NULL, the ON condition e.manager_id = m.employee_id can never
+--    match either - causing the LEFT JOIN to also fill m.* with NULL for employees
+--    who simply have no manager. This produces the SAME NULL pattern as "manager left
+--    the company", so the two cases get conflated unless explicitly separated.
+--    Fix: add `AND e.manager_id IS NOT NULL` to exclude employees who never had
+--    a manager in the first place, leaving only the true "manager left" case.
+-- 3. Always qualify column names (e.column vs m.column) once you self-join a table -
+--    unqualified names are ambiguous since both sides share identical column names.
