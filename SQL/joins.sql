@@ -198,3 +198,36 @@ ORDER BY e.employee_id;
 --    a manager in the first place, leaving only the true "manager left" case.
 -- 3. Always qualify column names (e.column vs m.column) once you self-join a table -
 --    unqualified names are ambiguous since both sides share identical column names.
+
+-- Problem: 1341. Movie Rating
+-- Difficulty: Medium
+-- Topic: Joins + UNION ALL
+-- Link: https://leetcode.com/problems/movie-rating/
+
+(SELECT u.name AS results
+FROM Users u
+JOIN MovieRating r ON u.user_id = r.user_id
+GROUP BY u.user_id
+ORDER BY COUNT(r.movie_id) DESC, u.name ASC
+LIMIT 1)
+
+UNION ALL
+
+(SELECT m.title AS results
+FROM Movies m
+JOIN MovieRating r ON m.movie_id = r.movie_id
+WHERE DATE_FORMAT(r.created_at, '%Y-%m') = '2020-02'
+GROUP BY m.movie_id
+ORDER BY AVG(r.rating) DESC, m.title ASC
+LIMIT 1);
+
+-- Key takeaways:
+-- 1. UNION ALL combines two independent queries into one result set. Use UNION ALL
+--    (not UNION) when you don't need deduplication — it's also faster.
+-- 2. Each subquery must be wrapped in parentheses when using ORDER BY + LIMIT
+--    with UNION ALL. Without parentheses, MySQL interprets ORDER BY/LIMIT as
+--    applying to the entire UNION result, causing a syntax error.
+-- 3. Both SELECT lists must use the same alias (results) so the output column
+--    has a consistent name.
+-- 4. Tie-breaking: ORDER BY count/avg DESC, name/title ASC handles lexicographic
+--    tiebreak cleanly with a secondary sort.
