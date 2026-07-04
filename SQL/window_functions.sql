@@ -110,3 +110,38 @@ FROM (
     FROM employee
 ) t
 WHERE rnk = 2;
+
+-- Problem: 1321. Restaurant Growth
+-- Difficulty: Medium
+-- Topic: Window Functions (sliding window, moving average)
+-- Link: https://leetcode.com/problems/restaurant-growth/
+
+WITH daily_amount AS (
+    SELECT visited_on, SUM(amount) AS daily_total
+    FROM Customer
+    GROUP BY visited_on
+),
+sliding AS (
+    SELECT visited_on,
+           SUM(daily_total) OVER (ORDER BY visited_on ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS amount,
+           ROUND(SUM(daily_total) OVER (ORDER BY visited_on ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) / 7, 2) AS average_amount
+    FROM daily_amount
+)
+SELECT *
+FROM sliding
+WHERE visited_on >= (SELECT MIN(visited_on) FROM Customer) + INTERVAL 6 DAY
+ORDER BY visited_on ASC;
+
+-- Key takeaways:
+-- 1. Sliding window syntax: SUM(...) OVER (ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW)
+--    = current row + 6 rows before = 7-day window.
+-- 2. ORDER BY vs PARTITION BY in window functions:
+--    - PARTITION BY: splits into independent groups, each computed separately
+--    - ORDER BY (no PARTITION BY): slides along the full sequence in time order
+--    This problem needs sliding along time → ORDER BY, not PARTITION BY.
+-- 3. CRITICAL PITFALL: WHERE executes BEFORE window functions in the same query layer.
+--    Filtering rows first shrinks what the window can "see", producing wrong results.
+--    Fix: two CTE layers — inner layer computes window over ALL rows; outer WHERE
+--    filters only after the window is fully computed.
+-- 4. Multiple customers on the same day → GROUP BY visited_on first (daily_amount CTE)
+--    before the sliding window, otherwise each customer row is treated as a separate day.
